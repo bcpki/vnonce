@@ -1,29 +1,36 @@
-# Preamble
-BIP:
-Title: Extra nonce in block header (vNonce)
-Author: Timo Hanke 
-Discussions-To:
-Status:
-Type: Standards Track
-Created:
-Post-History:
-Replaces:
-Superseded-By:
-Resolution:
-# Abstract
+<pre>
+  BIP:
+  Title: Extra nonce in block header (vNonce)
+  Author: Timo Hanke 
+  Status:
+  Type: Standards Track
+  Created: 2014-07-17
+</pre>
+
+==Abstract==
+
 There are incentives for miners to find cheap, non-standard ways to generate new work, which are not necessarily in the best interest of the protocol.
 In order to reduce these incentives this proposal re-assigns 15 bits from the version field of the block header to a new extra nonce field called _vNonce_.
-# Copyright
-# Specification
+
+==Copyright==
+
+This document is placed in the public domain.
+
+==Specification==
+
 The block version number field in the block header is reduced in size from 32 bits to 16 bits, occupying now only the first two bytes of the header.
 The third and fourth byte in the block header are assigned to the new extra nonce field (vNonce) inside the block header. 
 However, the most significant bit of the vNonce (as a little-endian number) is always zero and the vNonce is effectively 15 bits long.  
-For informational purposes the version number of blocks containing a non-zero vNonce is set to 3.  
-# Motivation
+For informational purposes the version number of blocks containing a non-zero vNonce is set to 4.  
+
+==Motivation==
+
 The motivation of this proposal is to provide miners with a cheap constant-complexity method to create new work that does not require altering the transaction tree.
 
 Furthermore, the motivation is to protect the version and timestamp fields in the block header from abuse.
-# Rationale
+
+==Rationale==
+
 Traditionally, the extra nonce is part of the coinbase field of the generation transaction, which is always the very first transaction of a block.
 After incrementing the extra nonce the minimum amount of work a miner has to do to re-calculate the block header is a) to hash the coinbase transaction and b) to re-calculate the left-most branch of the merkle tree all the way to the merkle root.
 This is necessary overhead any miner has to do besides hashing the block header itself.
@@ -47,7 +54,9 @@ As this is unwanted behaviour, there should not exist any incentive for a miner 
 
 The solution is to reduce the range of version numbers from 2^32 to 2^16 and to declare the freed two bytes of the block header as legitimate space for an extra nonce.
 This will economically reduce the incentive for a miner to abuse the shortened version number by a factor of 2^16.
-# Backwards Compatibility
+
+==Backwards Compatibility==
+
 The proposal is implemented without causing or requiring any blockchain forks.
 
 Old nodes (before this BIP) accept all block headers whose first 4 bytes represent a little-endian integer (the version number) greater or equal to 2.
@@ -64,8 +73,10 @@ When a majority of the last 100 blocks has a non-zero vNonce then old nodes will
 The new block version number 3 is introduced only for informational purposes to make the block creator's intention clearly visible.
 There is no code to phase out version 2 blocks.
 Strictly speaking it is not necessary to introduce a new version number for this BIP at all. 
-# Reference Implementation
-See github:
+
+==Reference Implementation==
+
+See github: https://github.com/bcpki/vnonce
 
 Previously the data type of the version was $int$ (signed).
 Now the data type of version is $unsigned short$ so that the full 16 bits are available for version numbers.
@@ -73,6 +84,4 @@ The data type of vNonce is also $unsigned short$.
 
 The reference implementation creates new block headers by incrementing vNonce in an inner loop and extraNonce in an outer loop. 
 These block headers are served through the GBT protocol.
-# Final implementation
-
 
