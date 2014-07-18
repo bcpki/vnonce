@@ -10,7 +10,7 @@
 ==Abstract==
 
 There are incentives for miners to find cheap, non-standard ways to generate new work, which are not necessarily in the best interest of the protocol.
-In order to reduce these incentives this proposal re-assigns 15 bits from the version field of the block header to a new extra nonce field called _vNonce_.
+In order to reduce these incentives this proposal re-assigns 15 bits from the version field of the block header to a new extra nonce field called ''vNonce''.
 
 ==Copyright==
 
@@ -34,7 +34,7 @@ Furthermore, the motivation is to protect the version and timestamp fields in th
 Traditionally, the extra nonce is part of the coinbase field of the generation transaction, which is always the very first transaction of a block.
 After incrementing the extra nonce the minimum amount of work a miner has to do to re-calculate the block header is a) to hash the coinbase transaction and b) to re-calculate the left-most branch of the merkle tree all the way to the merkle root.
 This is necessary overhead any miner has to do besides hashing the block header itself.
-We shall call the process that leads to a new block header from the same transaction set the _pre-hashing_.
+We shall call the process that leads to a new block header from the same transaction set the ''pre-hashing''.
 
 First it should be noted that the relative cost of pre-hashing in the whole mining process depends on the block size.
 (At least this is true if pre-hashing is done in the traditional way described above.) 
@@ -76,11 +76,11 @@ Strictly speaking it is not necessary to introduce a new version number for this
 
 ==Reference Implementation==
 
-See github: https://github.com/bcpki/vnonce
+See [https://github.com/bcpki/vnonce github].
 
-Previously the data type of the version was $int$ (signed).
-Now the data type of version is $unsigned short$ so that the full 16 bits are available for version numbers.
-The data type of vNonce is also $unsigned short$. 
+Previously the data type of the version was <code>int</code> (signed).
+Now the data type of version is <code>unsigned short</code> so that the full 16 bits are available for version numbers.
+The data type of vNonce is also <code>unsigned short</code>. 
 
 The reference implementation creates new block headers by incrementing vNonce in an inner loop and extraNonce in an outer loop. 
 These block headers are served through the GBT protocol.
