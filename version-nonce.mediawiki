@@ -67,7 +67,7 @@ This will economically reduce the incentive for a miner to abuse either the time
 The proposal is implemented without causing or requiring any blockchain forks.
 
 Old nodes (before this BIP) accept all block headers whose first 4 bytes represent a little-endian integer (the version number) greater or equal to 2.
-However, since the 4 version bytes are interpreted as a signed integer the most significant bit, which lives in the 4th byte, must be 0.
+However, since the 4 version bytes are interpreted as a signed integer, the most significant bit, which lives in the 4th byte, must be 0.
 If it is not then the version number will be interpreted as smaller than 2 (because it is negative) and the block will be rejected.
 Therefore we require that the most significant bit of the vNonce (as a little-endian number) is unset.
 New nodes explicitly reject blocks which have the highest bit of vNonce set.
@@ -75,7 +75,7 @@ This makes the vNonce effectively 15 bits long.
 
 Old nodes will accept blocks created by new nodes with any 15 bit vNonce,
 so old and new nodes can co-exist without any fork happening.
-When a majority of the last 100 blocks has a non-zero vNonce then old nodes will create an update alert to the user.
+When a majority of the last 100 blocks has a non-zero vNonce then old nodes will trigger an update alert to the user.
 
 The new block version number 3 is introduced only for informational purposes to make the block creator's intention clearly visible.
 There is no code to phase out version 2 blocks.
@@ -85,10 +85,9 @@ Strictly speaking it is not necessary to introduce a new version number for this
 
 See [https://github.com/bcpki/vnonce github].
 
-Previously the data type of the version was <code>signed int</code> (signed).
+Previously the data type of the version was <code>signed int</code>.
 Now the data type of version is <code>unsigned short</code> so that the full 16 bits are available for version numbers.
 The data type of vNonce is also <code>unsigned short</code>. 
 
-The reference implementation creates new block headers by incrementing vNonce in an inner loop and extraNonce in an outer loop. 
-These block headers are served through the GBT protocol.
-
+When acting as a server for the GBT protocol
+the reference implementation increments vNonce in an inner loop and extraNonce in an outer loop. 
