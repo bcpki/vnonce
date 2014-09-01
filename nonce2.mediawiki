@@ -1,6 +1,6 @@
 <pre>
   BIP:
-  Title: Extra nonce in block header (vNonce)
+  Title: Extra nonce in block header (nonce2)
   Author: Timo Hanke 
   Status:
   Type: Standards Track
@@ -10,7 +10,7 @@
 ==Abstract==
 
 There are incentives for miners to find cheap, non-standard ways to generate new work which are not in the best interest of the protocol.
-The proposal eliminates or reduces these incentives by re-assigning 15 bits from the version field of the block header to a new extra nonce field called ''vNonce''.
+The proposal eliminates or reduces these incentives by re-assigning 15 bits from the version field of the block header to a new extra nonce field called ''nonce2''.
 
 ==Copyright==
 
@@ -19,11 +19,11 @@ This document is placed in the public domain.
 ==Specification==
 
 The block version number is the 4 byte long field at the beginning of the block header.
-This field is shrunk to the first two bytes of the block header and the freed two bytes are assigned to the new extra nonce field (vNonce).
+This field is shrunk to the first two bytes of the block header and the freed two bytes are assigned to the new extra nonce field (nonce2).
 
-The most significant bit of the vNonce (as a little-endian number) is always zero so that vNonce is effectively 15 bits long.  
+The most significant bit of the nonce2 (as a little-endian number) is always zero so that nonce2 is effectively 15 bits long.  
 
-The version number of blocks containing a non-zero vNonce is set to 3.  
+The version number of blocks containing a non-zero nonce2 is set to 3.  
 
 ==Motivation==
 
@@ -69,13 +69,13 @@ The proposal is implemented without causing or requiring any blockchain forks.
 Old nodes (before this BIP) accept all block headers whose first 4 bytes represent a little-endian integer (the version number) greater or equal to 2.
 However, since the 4 version bytes are interpreted as a signed integer, the most significant bit, which lives in the 4th byte, must be 0.
 If it is not then the version number will be interpreted as smaller than 2 (because it is negative) and the block will be rejected.
-Therefore we require that the most significant bit of the vNonce (as a little-endian number) is unset.
-New nodes explicitly reject blocks which have the highest bit of vNonce set.
-This makes the vNonce effectively 15 bits long.  
+Therefore we require that the most significant bit of the nonce2 (as a little-endian number) is unset.
+New nodes explicitly reject blocks which have the highest bit of nonce2 set.
+This makes the nonce2 effectively 15 bits long.  
 
-Old nodes will accept blocks created by new nodes with any 15 bit vNonce,
+Old nodes will accept blocks created by new nodes with any 15 bit nonce2,
 so old and new nodes can co-exist without any fork happening.
-When a majority of the last 100 blocks has a non-zero vNonce then old nodes will trigger an update alert to the user.
+When a majority of the last 100 blocks has a non-zero nonce2 then old nodes will trigger an update alert to the user.
 
 The new block version number 3 is introduced only for informational purposes to make the block creator's intention clearly visible.
 There is no code to phase out version 2 blocks.
@@ -87,7 +87,7 @@ See [https://github.com/bcpki/vnonce github].
 
 Previously the data type of the version was <code>signed int</code>.
 Now the data type of version is <code>unsigned short</code> so that the full 16 bits are available for version numbers.
-The data type of vNonce is also <code>unsigned short</code>. 
+The data type of nonce2 is also <code>unsigned short</code>. 
 
 When acting as a server for the GBT protocol
-the reference implementation increments vNonce in an inner loop and extraNonce in an outer loop. 
+the reference implementation increments nonce2 in an inner loop and extraNonce in an outer loop. 
